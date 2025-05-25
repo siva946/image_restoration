@@ -397,35 +397,25 @@
                 processBtn.textContent = 'Processing...';
 
                 // Send to backend
-                fetch('https://github.com/siva946/image_restoration/blob/main/app.py/process', {
+                fetch('/process', {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                    try {
-                        const data = JSON.parse(text);
-                        if (data.error) {
-                            alert(data.error);
-                        } else {
-                            const restoredImg = document.getElementById('restoredImage');
-                            restoredImg.src = 'data:image/png;base64,' + data.restored_image;
-                            const downloadBtn = document.getElementById('download');
-                            downloadBtn.classList.remove('hidden');
-                            downloadBtn.onclick = () => {
-                                const link = document.createElement('a');
-                                link.href = restoredImg.src;
-                                link.download = 'restored_image.png';
-                                link.click();
-                            };
-                        }
-                    } catch (e) {
-                        alert('Error parsing JSON response: ' + e.message);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        const restoredImg = document.getElementById('restoredImage');
+                        restoredImg.src = 'data:image/png;base64,' + data.restored_image;
+                        const downloadBtn = document.getElementById('download');
+                        downloadBtn.classList.remove('hidden');
+                        downloadBtn.onclick = () => {
+                            const link = document.createElement('a');
+                            link.href = restoredImg.src;
+                            link.download = 'restored_image.png';
+                            link.click();
+                        };
                     }
                 })
                 .catch(error => alert('Error: ' + error))
