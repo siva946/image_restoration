@@ -120,9 +120,10 @@ def process_image():
 
         return jsonify({'restored_image': restored_image})
     except Exception as e:
-        # Log error internally and return generic message
-        print(f"Error processing image: {e}")
-        return jsonify({'error': 'An error occurred during image processing.'}), 500
+        import traceback
+        traceback.print_exc()
+        # Return detailed error message for debugging (can be changed to generic in production)
+        return jsonify({'error': f'An error occurred during image processing: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
